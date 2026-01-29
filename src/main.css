@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* bg */
+  --color-bg-primary: oklch(0.873 0.045 282.7);
+  --color-bg-secondary: oklch(0.956 0.021 283.1);
+  --color-bg-tertiary: oklch(0.970 0.000 89.9);
+  --color-bg-alt: oklch(24.463% 0.02885 255.259);
+  
+  /* text */
+  --color-primary: oklch(0% 0 0);
+  --color-secondary: oklch(0.35 0 89.9);
+  --color-muted: oklch(0.627 0.000 89.9);
+  --color-alt: oklch(0.891 0.000 89.9);
+  --color-red: oklch(0.552 0.159 23.9);
+
+  --color-color: oklch(55.825% 0.18795 263.085);
+
+  --color-hover: oklch(55.825% 0.18795 263.085 / 0.5);
+}
+
+.dark {
+  /* Dark mode */
+  /* bg */
+  --color-bg-primary: oklch(30.386% 0.03696 252.146);
+  --color-bg-secondary: oklch(24.463% 0.02885 255.259);
+  --color-bg-tertiary: oklch(43.491% 0.03159 266.259);
+  --color-bg-alt: oklch(82.972% 0.0117 269.55);
+
+  /* text */
+  --color-primary: oklch(100% 0.00011 271.152);
+  --color-secondary: oklch(78.261% 0.00009 271.152);
+  --color-muted: oklch(52.78% 0.00006 271.152);
+  --color-alt: oklch(32.109% 0.00004 271.152);
+  --color-red: oklch(64.28% 0.21734 25.786);
+
+  --color-color: oklch(55.825% 0.18795 263.085);
+
+  --color-hover: oklch(55.825% 0.18795 263.085 / 0.5);
+}
+
+body {
+  font-family: "Chakra Petch", sans-serif;
+  margin: 0;
+  padding: 0;
+  /* ใช้สีพื้นหลังตาม CSS Variable ที่กำหนด */
+  background-color: var(--color-bg-primary);
+  color: var(--color-primary); /* ปรับสี text ให้ตรงข้ามกับพื้นหลัง */
+  transition: background-color 1s ease-in-out, color 1s ease-in-out;
+}
