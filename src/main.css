@@ -47,5 +47,5 @@ body {
   /* ใช้สีพื้นหลังตาม CSS Variable ที่กำหนด */
   background-color: var(--color-bg-primary);
   color: var(--color-primary); /* ปรับสี text ให้ตรงข้ามกับพื้นหลัง */
-  transition: background-color 1s ease-in-out, color 1s ease-in-out;
+  /* transition: background-color 1s ease-in-out, color 1s ease-in-out; */
 }

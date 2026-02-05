@@ -20,23 +20,23 @@
         aria-label="Toggle Dark Mode"
       >
         <SunIcon v-if="isDark" class="w-6 h-6 text-amber-400" />
-
         <MoonIcon v-else class="w-6 h-6 text-indigo-800" />
       </button>
 
-      <div class="flex items-center gap-3 pl-4 border-l border-muted ">
+      <!-- v-if: Show profile dropdown if authenticated -->
+      <div v-if="authStore.isAuthenticated && authStore.user" class="flex items-center gap-3 pl-4 border-l border-muted">
         <div class="relative">
           <button
             @click="toggleDropdown"
             class="rounded-lg p-0.5 cursor-pointer flex items-center space-x-2 focus:outline-none hover:scale-95 hover:bg-hover transition-all"
           >
             <div class="text-right hidden sm:block">
-              <div class="text-sm font-medium text-primary">John Doe</div>
-              <div class="text-xs text-secondary">Admin</div>
+              <div class="text-sm font-medium text-primary">{{ authStore.user.name }}</div>
+              <div class="text-xs text-secondary">{{ authStore.user.email }}</div>
             </div>
             <img
               class="h-8 w-8 rounded-full border border-secondary object-cover"
-              src="https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff"
+              :src="authStore.user.picture || `https://ui-avatars.com/api/?name=${authStore.user.name}&background=0D8ABC&color=fff`"
               alt="User avatar"
             />
           </button>
@@ -55,41 +55,27 @@
           >
             <div
               v-if="isOpen"
-              class=" absolute right-0 mt-2 w-64 bg-bg-secondary rounded-lg shadow-xl border border-bg-primary z-20 overflow-hidden"
+              class="absolute right-0 mt-2 w-64 bg-bg-secondary rounded-lg shadow-xl border border-bg-primary z-1 overflow-hidden"
             >
-              <div
-                class="px-4 py-4 border-b border-bg-primary bg-bg-secondary flex items-center gap-3"
-              >
+              <div class="px-4 py-4 border-b border-bg-primary bg-bg-secondary flex items-center gap-3">
                 <img
-                  src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix"
+                  :src="authStore.user.picture || `https://ui-avatars.com/api/?name=${authStore.user.name}&background=0D8ABC&color=fff`"
                   class="w-10 h-10 rounded-full bg-white p-1 shadow-sm"
+                  alt="User avatar"
                 />
                 <div>
-                  <p class="text-sm font-semibold text-primary">สมชาย ใจดี</p>
-                  <p class="text-xs text-secondary">somchai@example.com</p>
+                  <p class="text-sm font-semibold text-primary">{{ authStore.user.name }}</p>
+                  <p class="text-xs text-secondary">{{ authStore.user.email }}</p>
                 </div>
               </div>
 
-              <div class="py-1 ">
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-primary hover:bg-hover transition-colors items-center gap-2"
-                >
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-hover transition-colors items-center gap-2">
                   <i class="fa-regular fa-user w-4 text-center"></i>
                   ดูหน้าโปรไฟล์
                 </a>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-primary hover:bg-hover transition-colors items-center gap-2"
-                >
+                <a href="#" class="block px-4 py-2 text-sm text-primary hover:bg-hover transition-colors items-center gap-2">
                   <i class="fa-solid fa-gear w-4 text-center"></i> ตั้งค่าบัญชี
-                </a>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-sm text-primary hover:bg-hover transition-colors items-center gap-2"
-                >
-                  <i class="fa-regular fa-credit-card w-4 text-center"></i>
-                  การชำระเงิน
                 </a>
               </div>
 
@@ -98,12 +84,10 @@
               <div class="py-1">
                 <a
                   href="#"
-                  @click.prevent="logout"
+                  @click.prevent="handleLogout"
                   class="block px-4 py-2 text-sm font-semibold text-red hover:bg-red/20 transition-colors items-center gap-2"
                 >
-                  <i
-                    class="fa-solid  fa-arrow-right-from-bracket w-4 text-center"
-                  ></i>
+                  <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center"></i>
                   ออกจากระบบ
                 </a>
               </div>
@@ -111,50 +95,42 @@
           </transition>
         </div>
       </div>
+      
+      <!-- v-else: Show login button if not authenticated -->
+      <div v-else class="flex items-center pl-4 border-l border-muted">
+        <router-link to="/login" class="text-sm font-medium text-primary hover:underline">
+          เข้าสู่ระบบ
+        </router-link>
+      </div>
     </div>
   </nav>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { SunIcon, MoonIcon, Bars3Icon } from "@heroicons/vue/24/outline";
 import { useDark, useToggle } from "@vueuse/core";
+import { useAuthStore } from "@/stores/auth";
 
-export default {
-  name: "Navbar",
-  components: {
-    SunIcon,
-    MoonIcon,
-    Bars3Icon,
-  },
-  setup() {
-    const isDark = useDark();
-    const toggleDark = useToggle(isDark);
+// --- Composables ---
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
+const router = useRouter();
+const authStore = useAuthStore();
 
-    // Profile Logic
-    const isOpen = ref(false); // สร้าง reactive variable
+// --- Profile Dropdown Logic ---
+const isOpen = ref(false);
 
-    const toggleDropdown = () => {
-      isOpen.value = !isOpen.value;
-    };
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value;
+};
 
-    const logout = () => {
-      // Logic logout จริงควรอยู่ที่นี่
-      console.log("Logging out...");
-      alert("กำลังออกจากระบบ...");
-      isOpen.value = false;
-    };
-
-    return {
-      isDark,
-      toggleDark,
-      isOpen, // 2. ต้อง return isOpen ออกไปให้ template ใช้
-      toggleDropdown,
-      logout,
-    };
-  },
-  methods: {
-    
-  },
+// --- Logout Logic ---
+const handleLogout = () => {
+  authStore.clearAuth();
+  isOpen.value = false;
+  router.push("/login");
+  console.log("Logging out...");
 };
 </script>
